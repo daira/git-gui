@@ -4,46 +4,152 @@
 
 namespace eval color {
 	# Variable colors
-	# Preffered way to set widget colors is using add_option.
-	# In some cases, like with tags in_diff/in_sel, we use these colors.
-	variable select_bg				lightgray
-	variable select_fg				black
-	variable inactive_select_bg		lightgray
-	variable inactive_select_fg		black
+	# Preferred way to set widget colors is using add_option.
+	# These variables are used by set_selection_colors.
+	variable select_bg              #242470
+	variable select_fg              #f0f0f0
+	variable inactive_select_bg     #404080
+	variable inactive_select_fg     #f0f0f0
 
 	proc sync_with_theme {} {
-		set base_bg				[ttk::style lookup . -background]
-		set base_fg				[ttk::style lookup . -foreground]
-		set text_bg				[ttk::style lookup Treeview -background]
-		set text_fg				[ttk::style lookup Treeview -foreground]
-		set select_bg			[ttk::style lookup Default -selectbackground]
-		set select_fg			[ttk::style lookup Default -selectforeground]
-		set inactive_select_bg	[convert_rgb_to_gray $select_bg]
-		set inactive_select_fg	$select_fg
+		# TODO: only override these if a dark-mode setting is in effect.
 
-		set color::select_bg $select_bg
-		set color::select_fg $select_fg
-		set color::inactive_select_bg $inactive_select_bg
-		set color::inactive_select_fg $inactive_select_fg
+		set darkest                 #101010
+		set darker                  #242424
+		set dark                    #303030
+		set darkish                 #404040
+		set lightish                #484848
+		set light                   #585858
+		set lighter                 #686868
+		set lightest                #808080
+		set white                   #e0e0e0
+		set whiter                  #f0f0f0
+		set whitest                 #ffffff
+
+		set scale                   18
+
+		set base_bg                 $dark
+		set unfocused               $base_bg
+		set focused                 $whiter
+
+		set text_bg                 $darker
+		set text_fg                 $white
+		set text_disabled           $light
+		set text_highlight          $whitest
+
+		set menu_bg                 $text_bg
+		set menu_fg                 $text_fg
+		set menu_select_bg          $darkish
+		set menu_select_fg          $text_highlight
+
+		set field_bg                $lightish
+		set field_fg                $whiter
+
+		set control_resting         $lighter
+		set control_active          $lightest
+		set control_disabled        $darkest
+		set control_readonly        $dark
+		set control_border          $base_bg
+
+		set button_bg               $darker
+		set button_text             $text_fg
+		set button_text_disabled    $lightest
+		set button_text_active      $text_highlight
+
+		set indicator_color         $darkish
+		set indicator_active        $control_active
+
+		set scroll_resting          $control_resting
+		set scroll_active           $control_active
+		set scroll_disabled         $control_disabled
+		set scroll_border           $control_border
+		set scroll_trough           $dark
+		set scroll_arrow            $whiter
+
+		set arrow_size              $scale
+
+		ttk::style theme use alt
+
+		ttk::style configure TFrame -background $base_bg \
+			-highlightthickness 1 -highlightcolor $focused -highlightbackground $unfocused
+
+		ttk::style configure TLabel -background $base_bg -foreground $text_fg \
+			-highlightthickness 1 -highlightcolor $focused -highlightbackground $unfocused
+		ttk::style configure TLabelframe -background $base_bg
+		ttk::style configure TLabelframe.Label -background $base_bg -foreground $text_highlight
+
+		ttk::style configure TPanedwindow -background $base_bg -foreground $text_fg \
+			-highlightthickness 1 -highlightcolor $focused -highlightbackground $unfocused
+
+		ttk::style configure TScrollbar -background $scroll_resting -bordercolor $scroll_border \
+			-troughcolor $scroll_trough -arrowcolor $scroll_arrow -arrowsize $arrow_size
+		ttk::style map TScrollbar -background [list active $scroll_active disabled $scroll_disabled]
+
+		ttk::style configure TButton -background $button_bg -foreground $button_text -borderwidth 3 -bordercolor $control_border \
+			-highlightthickness 1 -highlightcolor $focused -highlightbackground $unfocused
+		ttk::style map TButton -background [list active $control_active disabled $control_disabled readonly $control_readonly]
+		ttk::style map TButton -foreground [list active $button_text_active disabled $button_text_disabled readonly $button_text]
+
+		ttk::style configure TEntry -fieldbackground $field_bg -background $base_bg -foreground $field_fg \
+			-selectbackground $color::select_bg -selectforeground $color::select_fg \
+			-highlightthickness 1 -highlightcolor $focused -highlightbackground $unfocused
+		ttk::style configure EntryFrame -background $control_border \
+			-highlightthickness 1 -highlightcolor $focused -highlightbackground $unfocused
+
+		ttk::style configure TSpinbox -selectbackground $color::select_bg -selectforeground $color::select_fg \
+			-fieldbackground $field_bg -arrowcolor $scroll_arrow -arrowsize $arrow_size \
+			-highlightthickness 1 -highlightcolor $focused -highlightbackground $unfocused \
+			.vpane.lower.commarea.buffer.frame.t configure -background $base_bg -foreground $text_fg \
+			.vpane.lower.diff.body.t configure -background $base_bg -foreground $button_text \
+			.vpane.files.workdir.list configure -background $base_bg -foreground $button_text \
+			.vpane.files.index.list configure -background $base_bg -foreground $button_text \
+			.about_dialog.git_logo configure -background $base_bg -foreground $button_text
+		ttk::style map TSpinbox -background [list active $control_active disabled $base_bg readonly $control_readonly]
+		ttk::style map TCheckbutton -foreground [list active $text_highlight disabled $text_disabled readonly $text_fg]
+
+		ttk::style configure TCombobox -selectbackground $color::select_bg -selectforeground $color::select_fg \
+			-foreground $field_fg -arrowcolor $scroll_arrow -arrowsize $arrow_size \
+			-highlightthickness 1 -highlightcolor $focused -highlightbackground $unfocused
+		ttk::style map TCombobox -background [list active $control_active disabled $base_bg readonly $control_readonly]
+		ttk::style map TCombobox -fieldbackground [list active $field_bg disabled $field_bg readonly $field_bg]
+
+		ttk::style configure TCheckbutton -background $base_bg -foreground $button_text -indicatorcolor $indicator_color \
+			-highlightthickness 1 -highlightcolor $focused -highlightbackground $unfocused
+		ttk::style map TCheckbutton -background [list active $control_active disabled $base_bg readonly $control_readonly]
+		ttk::style map TCheckbutton -foreground [list active $text_highlight disabled $text_disabled readonly $text_fg]
+
+		ttk::style configure TRadiobutton -background $base_bg -foreground $button_text -indicatorcolor $indicator_color \
+			-highlightthickness 1 -highlightcolor $focused -highlightbackground $unfocused
+		ttk::style map TRadiobutton -background [list active $control_active disabled $base_bg readonly $control_readonly]
+		ttk::style map TRadiobutton -foreground [list active $text_highlight disabled $text_disabled readonly $text_fg]
 
 		proc add_option {key val} {
 			option add $key $val widgetDefault
 		}
+
 		# Add options for plain Tk widgets
 		# Using `option add` instead of tk_setPalette to avoid unintended
 		# consequences.
 		if {![is_MacOSX]} {
-			add_option *Menu.Background $base_bg
-			add_option *Menu.Foreground $base_fg
-			add_option *Menu.activeBackground $select_bg
-			add_option *Menu.activeForeground $select_fg
+			add_option *Menu.Background $menu_bg
+			add_option *Menu.Foreground $menu_fg
+			add_option *Menu.activeBackground $menu_select_bg
+			add_option *Menu.activeForeground $menu_select_fg
 		}
 		add_option *Text.Background $text_bg
 		add_option *Text.Foreground $text_fg
-		add_option *Text.selectBackground $select_bg
-		add_option *Text.selectForeground $select_fg
-		add_option *Text.inactiveSelectBackground $inactive_select_bg
-		add_option *Text.inactiveSelectForeground $inactive_select_fg
+		add_option *Text.selectBackground $color::select_bg
+		add_option *Text.selectForeground $color::select_fg
+		add_option *Text.inactiveSelectBackground $color::inactive_select_bg
+		add_option *Text.inactiveSelectForeground $color::inactive_select_fg
+
+		add_option *Listbox.Background $field_bg
+		add_option *Listbox.Foreground $field_fg
+
+		add_option *TCombobox*Listbox.background $field_bg
+		add_option *TCombobox*Listbox.foreground $field_fg
+		add_option *TCombobox*Listbox.selectBackground $color::select_bg
+		add_option *TCombobox*Listbox.selectForeground $color::select_fg
 	}
 }
 
