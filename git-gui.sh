@@ -3272,7 +3272,7 @@ ttext $ui_workdir \
 	-borderwidth 0 \
 	-width 20 -height 10 \
 	-wrap none \
-	-takefocus 1 -highlightthickness 1\
+	-takefocus 1 -highlightthickness 1 -highlightcolor #f0f0f0 -highlightbackground #303030 \
 	-cursor $cursor_ptr \
 	-xscrollcommand {.vpane.files.workdir.sx set} \
 	-yscrollcommand {.vpane.files.workdir.sy set} \
@@ -3294,7 +3294,7 @@ ttext $ui_index \
 	-borderwidth 0 \
 	-width 20 -height 10 \
 	-wrap none \
-	-takefocus 1 -highlightthickness 1\
+	-takefocus 1 -highlightthickness 1 -highlightcolor #f0f0f0 -highlightbackground #303030 \
 	-cursor $cursor_ptr \
 	-xscrollcommand {.vpane.files.index.sx set} \
 	-yscrollcommand {.vpane.files.index.sy set} \
@@ -3441,8 +3441,7 @@ ttext $ui_comm \
 	-undo true \
 	-maxundo 20 \
 	-autoseparators true \
-	-takefocus 1 \
-	-highlightthickness 1 \
+	-takefocus 1 -highlightthickness 1 -highlightcolor #f0f0f0 -highlightbackground #303030 \
 	-relief sunken \
 	-width $repo_config(gui.commitmsgwidth) -height 9 -wrap none \
 	-font font_diff \
@@ -3569,7 +3568,7 @@ ttext $ui_diff \
 	-borderwidth 0 \
 	-width 80 -height 5 -wrap none \
 	-font font_diff \
-	-takefocus 1 -highlightthickness 1 \
+	-takefocus 1 -highlightthickness 1 -highlightcolor #f0f0f0 -highlightbackground #303030 \
 	-xscrollcommand {.vpane.lower.diff.body.sbx set} \
 	-yscrollcommand {.vpane.lower.diff.body.sby set} \
 	-state disabled
@@ -3606,13 +3605,13 @@ $ui_diff tag conf d_+s \
 	-foreground {#00a000} \
 	-background {#e2effa}
 $ui_diff tag conf d_-s \
-	-foreground red \
+	-foreground darkred \
 	-background {#e2effa}
 $ui_diff tag conf d_s+ \
 	-foreground {#00a000} \
 	-background ivory1
 $ui_diff tag conf d_s- \
-	-foreground red \
+	-foreground darkred \
 	-background ivory1
 
 $ui_diff tag conf d< \
